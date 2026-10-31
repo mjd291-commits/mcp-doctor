@@ -87,6 +87,26 @@ test("weak or malformed tool schemas remain raw evidence and produce separate ju
   assert.equal(report.checks.find((check) => check.id === "tools.name-hygiene")?.status, "warn");
 });
 
+test("hung connection is bounded and does not trigger legacy fallback after timeout", async () => {
+  const modes: string[] = [];
+  const sessionFactory: ScannerSessionFactory = (_url, mode) => {
+    modes.push(mode);
+    return makeSession({ connect: async () => new Promise<never>(() => undefined) });
+  };
+  const started = Date.now();
+
+  const report = await scanRemote("https://fixture.invalid/mcp", {
+    sessionFactory,
+    connectTimeoutMs: 25,
+  });
+
+  assert.ok(Date.now() - started < 500, "scanner connect must return after the configured deadline");
+  assert.deepEqual(modes, ["streamable-http"]);
+  assert.equal(report.transport, "none");
+  assert.equal(report.observations.find((item) => item.id === "connection")?.error?.kind, "timeout");
+  assert.equal(report.checks.find((check) => check.id === "connection")?.status, "fail");
+});
+
 test("hung discovery is bounded and classified as a timeout", async () => {
   const session = makeSession({
     listTools: async () => new Promise<never>(() => undefined),
@@ -156,13 +176,24 @@ test("disconnect failure is observable and a later scan can recover cleanly", as
   assert.equal(recovered.checks.find((check) => check.id === "tools.input-schema")?.status, "pass");
 });
 
-test("sensitive target credentials are redacted from reports", async () => {
-  const sessionFactory: ScannerSessionFactory = () => makeSession();
+test("sensitive target and evidence credentials are redacted from reports", async () => {
+  const sessionFactory: ScannerSessionFactory = () =>
+    makeSession({
+      getDiscoverResult: () => ({ token: "discover-secret", authorization: "Bearer hidden-value" }),
+      listTools: async () => [
+        {
+          name: "safe-tool",
+          description: "authorization: Bearer hidden-description-token",
+          inputSchema: { type: "object", properties: {} },
+        },
+      ],
+    });
   const report = await scanRemote(
     "https://user:password@example.com/mcp?token=abc123&safe=yes#fragment",
     { sessionFactory },
   );
+  const serialized = JSON.stringify(report);
 
-  assert.doesNotMatch(report.target, /password|abc123|fragment/);
-  assert.match(report.target, /REDACTED/);
+  assert.doesNotMatch(serialized, /password|abc123|discover-secret|hidden-value|hidden-description-token|fragment/);
+  assert.match(serialized, /REDACTED/);
 });
