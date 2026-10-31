@@ -15,6 +15,22 @@ export const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
 export const DEFAULT_CLOSE_TIMEOUT_MS = 1_000;
 const MAX_EVIDENCE_JSON_CHARS = 64_000;
+const SENSITIVE_KEYS = new Set([
+  "access_token",
+  "apikey",
+  "api_key",
+  "authorization",
+  "auth",
+  "client_secret",
+  "cookie",
+  "id_token",
+  "key",
+  "password",
+  "refresh_token",
+  "secret",
+  "set-cookie",
+  "token",
+]);
 
 export type ToolLike = {
   name?: unknown;
@@ -69,24 +85,20 @@ function redactText(value: string): string {
     .replace(/Bearer\s+[A-Za-z0-9._~+\/-]+=*/gi, "Bearer [REDACTED]");
 }
 
+function safeJsonReplacer(key: string, item: unknown): unknown {
+  if (key && SENSITIVE_KEYS.has(key.toLowerCase())) return "[REDACTED]";
+  if (typeof item === "string") return redactText(item);
+  if (typeof item === "bigint") return item.toString();
+  return item;
+}
+
 export function redactTarget(target: string): string {
   try {
     const url = new URL(target);
     if (url.username) url.username = "[REDACTED]";
     if (url.password) url.password = "[REDACTED]";
-    const sensitive = new Set([
-      "access_token",
-      "apikey",
-      "api_key",
-      "authorization",
-      "auth",
-      "key",
-      "password",
-      "secret",
-      "token",
-    ]);
     for (const key of [...url.searchParams.keys()]) {
-      if (sensitive.has(key.toLowerCase())) url.searchParams.set(key, "[REDACTED]");
+      if (SENSITIVE_KEYS.has(key.toLowerCase())) url.searchParams.set(key, "[REDACTED]");
     }
     url.hash = "";
     return url.toString();
@@ -97,11 +109,9 @@ export function redactTarget(target: string): string {
 
 export function safeJsonValue(value: unknown): unknown {
   try {
-    const json = JSON.stringify(value, (_key, item) =>
-      typeof item === "bigint" ? item.toString() : item,
-    );
+    const json = JSON.stringify(value, safeJsonReplacer);
     if (json === undefined) return undefined;
-    if (json.length <= MAX_EVIDENCE_JSON_CHARS) return value;
+    if (json.length <= MAX_EVIDENCE_JSON_CHARS) return JSON.parse(json) as unknown;
     return {
       truncated: true,
       originalJsonCharacters: json.length,
