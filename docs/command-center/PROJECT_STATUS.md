@@ -44,28 +44,29 @@ Current market research shows:
 
 ## Automation completed
 
-- GitHub CI exists for Node/TypeScript typecheck
-- Dependabot configured for npm and GitHub Actions
-- CodeQL workflow added for JavaScript/TypeScript
+- GitHub CI runs Node/TypeScript clean install + typecheck
+- the first infrastructure failure (npm caching without a lockfile) was diagnosed and fixed
+- clean install and `npm run typecheck` now pass on `main`
+- Dependabot configured for npm and GitHub Actions and has begun opening update PRs
+- CodeQL workflow added for JavaScript/TypeScript and is executing on `main`
 - GitHub public repository gives access to free standard Actions runners and public-repo security capabilities
 - one ChatGPT `MCP Doctor Command Center` scheduled automation created; because the account task limit was reached, ecosystem/spec/competitor monitoring was merged into this same automation rather than creating a redundant second task
 
 ## Current code state
 
-The scanner skeleton exists but is **not yet verified runnable**. Do not claim Alpha works until GitHub Issue #1 exit criteria pass.
+The scanner skeleton **installs and typechecks successfully**, but is **not yet runtime/protocol verified**. Do not claim Alpha works until GitHub Issue #1 fixture and current-protocol exit criteria pass.
 
 Important technical audit required: verify the initial scanner code against the current MCP 2026-07-28 stateless lifecycle and current SDK v2 APIs. Earlier project language around initialization/session behavior may be stale and must be corrected before it becomes architecture.
 
 ## Current critical path
 
-1. CI/install/typecheck verification
-2. current-protocol scanner correction
-3. deterministic fixtures/failure tests
-4. HostRule schema
-5. first OpenAI/ChatGPT + Claude + third-host rule packs
-6. first versioned host compatibility matrix
-7. repair-rule proof pipeline
-8. hosted product only after security gate
+1. current-protocol scanner audit/correction
+2. deterministic fixtures/failure tests
+3. HostRule schema
+4. first OpenAI/ChatGPT + Claude + third-host rule packs
+5. first versioned host compatibility matrix
+6. repair-rule proof pipeline
+7. hosted product only after security gate
 
 See `docs/command-center/ACTIVE_WORK_QUEUE.md` for detailed ordering.
 
