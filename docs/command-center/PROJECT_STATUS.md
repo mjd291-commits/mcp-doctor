@@ -54,7 +54,7 @@ Current market research shows:
 
 ## Current code state
 
-GitHub Issue #1 scanner modernization is now implemented on isolated branch `issue-1-modernize-scanner-core` in **draft PR #11** and is awaiting CI/review before merge.
+GitHub Issue #1 scanner modernization is implemented on isolated branch `issue-1-modernize-scanner-core` in **draft PR #11**. The current code has passed dependency installation, TypeScript typecheck, and the automated scanner test suite in GitHub Actions; the PR remains unmerged for review and the remaining Issue #1 upstream-tooling work.
 
 The implementation audit against MCP 2026-07-28 and the current TypeScript SDK establishes the following architecture:
 - modern connections use SDK version negotiation and are treated as stateless at the MCP core layer;
@@ -64,13 +64,14 @@ The implementation audit against MCP 2026-07-28 and the current TypeScript SDK e
 - missing optional capabilities are not treated as unhealthy;
 - default discovery does not execute arbitrary tools;
 - output now carries scanner, SDK, protocol-era and negotiated protocol-version context;
-- deterministic scanner tests cover modern healthy, malformed schema, timeout, cancellation and disconnect/recovery behavior.
+- persisted report evidence is size-bounded and credential-like values are redacted;
+- deterministic scanner tests cover modern healthy, malformed schema, connect/request timeout, cancellation and disconnect/recovery behavior.
 
-Issue #1 remains open until PR #11 passes CI/review and the remaining upstream Inspector/Conformance integration hooks plus any intentional legacy-era fixture are completed.
+Issue #1 remains open until PR #11 is reviewed and the remaining upstream Inspector/Conformance integration hooks plus any intentional legacy-era fixture are completed.
 
 ## Current critical path
 
-1. finish PR #11 CI/review and remaining Issue #1 upstream-tooling hooks
+1. review PR #11 and finish remaining Issue #1 upstream-tooling hooks
 2. deterministic fixtures/failure tests
 3. HostRule schema
 4. first OpenAI/ChatGPT + Claude + third-host rule packs
