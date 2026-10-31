@@ -9,7 +9,9 @@
   },
   "scripts": {
     "scan": "tsx src/cli.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "npm run test:fixtures",
+    "test:fixtures": "tsx --test test/fixtureSuite.test.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/client": "^2.0.0"
