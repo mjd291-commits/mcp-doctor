@@ -30,11 +30,11 @@ The product is no longer scoped as a generic MCP inspector/connection doctor. Of
 13. Reuse MCP Failure Lab scenarios instead of duplicating equivalent fault mechanics.
 
 ### 02 Host Compatibility
-14. Define versioned `HostRule` schema.
-15. Build current OpenAI/ChatGPT rule pack from official sources.
-16. Build Claude rule pack.
-17. Add third priority host (Codex/VS Code/Cursor/Gemini based on best available evidence).
-18. Produce first host-by-host matrix with `pass/fail/warn/unknown/not-tested` semantics.
+14. **IN PROGRESS — Issue #4 / branch `workstream-02/issue-4-host-rules-alpha`:** versioned `HostRule` schema and validator implemented in first pass.
+15. **IN PROGRESS — Issue #4:** OpenAI/ChatGPT Alpha rule pack researched from current official sources (5 initial rules).
+16. **IN PROGRESS — Issue #4:** Claude Alpha rule pack researched from current official sources (5 initial rules).
+17. **IN PROGRESS — Issue #4:** Gemini CLI selected as third host based on strongest host-specific official evidence (6 initial rules).
+18. Next: coordinate normalized observation keys with Workstream 01, add fixture-backed evaluator cases, and produce first host-by-host matrix with `pass/fail/warn/unknown/not-tested` semantics.
 
 ## P1 — Make findings trustworthy
 
