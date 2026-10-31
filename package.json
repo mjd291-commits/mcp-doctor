@@ -9,7 +9,8 @@
   },
   "scripts": {
     "scan": "tsx src/cli.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "validate:host-rules": "tsx src/hostCompatibility/validateRulePacks.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/client": "^2.0.0"
