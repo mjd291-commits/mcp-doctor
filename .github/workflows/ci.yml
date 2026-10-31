@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  typecheck:
+  typecheck-and-test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -27,3 +27,6 @@ jobs:
 
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Scanner tests
+        run: npm test
