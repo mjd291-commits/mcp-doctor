@@ -9,14 +9,18 @@
   },
   "scripts": {
     "scan": "tsx src/cli.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/scanner.test.ts",
+    "check": "npm run typecheck && npm test"
   },
   "dependencies": {
-    "@modelcontextprotocol/client": "^2.0.0"
+    "@modelcontextprotocol/client": "2.4.0"
   },
   "devDependencies": {
+    "@modelcontextprotocol/server": "2.4.0",
     "@types/node": "^24.0.0",
     "tsx": "^4.20.0",
-    "typescript": "^6.0.0"
+    "typescript": "^6.0.0",
+    "zod": "^4.0.0"
   }
 }
