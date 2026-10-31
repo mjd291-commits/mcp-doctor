@@ -23,7 +23,7 @@ The product is no longer scoped as a generic MCP inspector/connection doctor. Of
 8. Separate raw `Observation`/`Evidence` from compatibility `CheckResult`.
 9. Add adapters to ingest official Inspector strict-lint and official MCP Conformance results where useful.
 
-**Current implementation:** draft PR #11 (`issue-1-modernize-scanner-core`) completes the scanner lifecycle audit/correction, bounded connect/discovery/cleanup, cancellation propagation, raw evidence/observation separation, report version context and automated modern/malformed/timeout/cancellation/disconnect tests. Items 5–8 are implemented in the PR but remain unmerged pending CI/review. Item 9 and an intentional legacy-era fixture remain open before Issue #1 closes.
+**Current implementation:** draft PR #11 (`issue-1-modernize-scanner-core`) completes the scanner lifecycle audit/correction, bounded connect/discovery/cleanup, cancellation propagation, raw evidence/observation separation, report version context, credential-aware evidence redaction and automated modern/malformed/connect-timeout/request-timeout/cancellation/disconnect tests. Items 5–8 are implemented and have passed GitHub Actions typecheck/tests in the PR but remain unmerged pending review. Item 9 and an intentional legacy-era fixture remain open before Issue #1 closes.
 
 ### 03 Reliability & Failure Lab
 10. Add healthy modern fixture.
