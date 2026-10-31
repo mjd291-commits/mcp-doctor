@@ -4,7 +4,7 @@ Last updated: 2026-10-31
 
 ## Phase
 
-**Project restructured / Alpha 1 implementation starting**
+**Alpha 1 scanner modernization in implementation / review**
 
 ## Strategic position
 
@@ -54,13 +54,23 @@ Current market research shows:
 
 ## Current code state
 
-The scanner skeleton **installs and typechecks successfully**, but is **not yet runtime/protocol verified**. Do not claim Alpha works until GitHub Issue #1 fixture and current-protocol exit criteria pass.
+GitHub Issue #1 scanner modernization is now implemented on isolated branch `issue-1-modernize-scanner-core` in **draft PR #11** and is awaiting CI/review before merge.
 
-Important technical audit required: verify the initial scanner code against the current MCP 2026-07-28 stateless lifecycle and current SDK v2 APIs. Earlier project language around initialization/session behavior may be stale and must be corrected before it becomes architecture.
+The implementation audit against MCP 2026-07-28 and the current TypeScript SDK establishes the following architecture:
+- modern connections use SDK version negotiation and are treated as stateless at the MCP core layer;
+- scanner code does not assume modern `initialize` / `initialized` or MCP session state;
+- connect/discovery/cleanup operations are bounded and propagate cancellation;
+- raw `Evidence` and `Observation` records are distinct from compatibility `CheckResult` judgments;
+- missing optional capabilities are not treated as unhealthy;
+- default discovery does not execute arbitrary tools;
+- output now carries scanner, SDK, protocol-era and negotiated protocol-version context;
+- deterministic scanner tests cover modern healthy, malformed schema, timeout, cancellation and disconnect/recovery behavior.
+
+Issue #1 remains open until PR #11 passes CI/review and the remaining upstream Inspector/Conformance integration hooks plus any intentional legacy-era fixture are completed.
 
 ## Current critical path
 
-1. current-protocol scanner audit/correction
+1. finish PR #11 CI/review and remaining Issue #1 upstream-tooling hooks
 2. deterministic fixtures/failure tests
 3. HostRule schema
 4. first OpenAI/ChatGPT + Claude + third-host rule packs
