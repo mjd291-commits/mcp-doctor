@@ -1,69 +1,70 @@
 # MCP Doctor — Active Work Queue
 
-Last updated: 2026-10-31
+Last updated: 2026-11-03
 
 ## Current milestone
 
-**Alpha 1: verified scanner core + first multi-host compatibility matrix**
+**Alpha 1 integration gate: verified scanner core + first multi-host compatibility matrix**
 
-The product is no longer scoped as a generic MCP inspector/connection doctor. Official MCP tooling already covers or plans much of that territory. MCP Doctor's differentiated Alpha is a versioned host-readiness layer built on top of reliable protocol observations.
+MCP Doctor remains a versioned multi-host readiness and repair layer built on reliable protocol observations. Official Inspector and Conformance remain upstream authorities/tools to ingest or compare against, not functionality to duplicate.
 
 ## P0 — Now
 
-### 08 Infrastructure & Automation
-1. Confirm CI actually executes on current repo pushes/PRs.
-2. Confirm CodeQL workflow is accepted/runs.
-3. Confirm Dependabot config is active.
-4. Add reproducible dependency lockfile as soon as clean install is available.
+### Integration order
+1. Review/integrate PR #9 (Reliability fixture suite). Its deterministic fixture contract is the regression input for scanner behavior.
+2. Finish PR #11 (Scanner Core): add Inspector strict-lint and MCP Conformance comparison/ingestion hooks where useful; make the explicit legacy-era support decision; keep the normalized `Observation`/`Evidence` contract stable.
+3. Align PR #10 HostRule observation keys to PR #11's normalized observations, then add evaluator + fixture cases and emit the first machine-readable host readiness matrix.
+4. Keep all three branches isolated until their dependency interfaces are reconciled; do not represent Alpha as released while main remains pre-integration.
 
-### 01 Protocol & Scanner Core
-5. Complete GitHub Issue #1: clean install/typecheck and fix SDK drift.
-6. Audit current scanner against the 2026-07-28 stateless lifecycle; remove stale initialization/session assumptions.
-7. Add explicit timeout/cancellation and structured error taxonomy.
-8. Separate raw `Observation`/`Evidence` from compatibility `CheckResult`.
-9. Add adapters to ingest official Inspector strict-lint and official MCP Conformance results where useful.
+### 08 Infrastructure & Automation
+- CI, CodeQL and Dependabot are confirmed active and green on the current main baseline.
+- Add/confirm a reproducible dependency lockfile as integration lands.
+- Do not take unrelated major dependency upgrades into the Alpha integration gate unless required for security or compatibility.
 
 ### 03 Reliability & Failure Lab
-10. Add healthy modern fixture.
-11. Add malformed/weak schema fixture.
-12. Add timeout/hang and disconnect/recovery fixtures.
-13. Reuse MCP Failure Lab scenarios instead of duplicating equivalent fault mechanics.
+- Fixture implementation is complete on PR #9: healthy, weak/malformed schema, timeout/hang, disconnect/recovery and safe auth/fault paths.
+- Preserve the boundary with MCP Failure Lab: reuse broader runtime/tool-call fault mechanics rather than growing a duplicate fault framework.
+
+### 01 Protocol & Scanner Core
+- Main modernization is implemented on PR #11 against MCP 2026-07-28 / TypeScript SDK 2.4.0: stateless lifecycle, timeout/cancellation, Evidence/Observation separation, redaction and non-destructive discovery.
+- Remaining exit work: Inspector/Conformance comparison hooks and explicit legacy-era support decision.
 
 ### 02 Host Compatibility
-14. Define versioned `HostRule` schema.
-15. Build current OpenAI/ChatGPT rule pack from official sources.
-16. Build Claude rule pack.
-17. Add third priority host (Codex/VS Code/Cursor/Gemini based on best available evidence).
-18. Produce first host-by-host matrix with `pass/fail/warn/unknown/not-tested` semantics.
+- Versioned HostRule framework and source-backed ChatGPT/OpenAI, Claude and Gemini CLI packs are implemented on PR #10.
+- Next: normalize observation keys against PR #11, implement evaluation, demonstrate divergent host outcomes from one scan, and produce the first machine-readable matrix using `pass/fail/warn/unknown/not-tested` semantics.
+- Codex, VS Code and Cursor remain next host-pack candidates after the first matrix proves the evaluator contract.
 
 ## P1 — Make findings trustworthy
 
 ### 04 Security & Trust
-19. Hosted scanner SSRF/network threat model.
-20. Central redaction and max-size/time policies.
-21. Dependency/supply-chain/security review.
+- Complete hosted scanner SSRF/network threat model before arbitrary public URL scanning.
+- Centralize redaction and max-size/time policies.
+- Perform dependency/supply-chain/security review at the integration gate.
 
 ### 07 Compatibility Corpus & Data
-22. Define local versioned evidence model and fingerprints.
-23. Define rule/result/repair provenance.
-24. Prototype registry metadata sync without introducing a database prematurely.
+- Define local versioned evidence model, source fingerprints and staleness handling.
+- Define rule/result/repair provenance.
+- Prototype Registry/API metadata sync without introducing a database prematurely.
+- Track extension/version evidence independently from base-protocol conformance.
 
 ### 05 Repair & Runtime Proxy
-25. Define `FailureFingerprint` and `RepairRule` schemas.
-26. Add first 5 fixture-backed repair suggestions.
-27. Require proof-by-retest before a repair is marked validated.
+- Define `FailureFingerprint` and `RepairRule` schemas only after the first real host matrix exists.
+- Add first fixture-backed repair suggestions and require proof-by-retest before marking a repair validated.
+
+### Official extensions
+- Issue #12 tracks Skills/SEP-2640 awareness as P1. Do not expand Alpha scope or treat absence of Skills as base-protocol failure.
 
 ## P2 — Product surface
 
 ### 06 Web Product & UX
-28. Build readiness-matrix report UX.
-29. Add safe public endpoint scan flow only after Security gate.
-30. Add export/share/history after privacy model is settled.
+- Build readiness-matrix report UX after the matrix contract exists.
+- Add safe public endpoint scan flow only after Security gate.
+- Add export/share/history after privacy model is settled.
 
 ### 09 Growth & Commercial
-31. Update README/launch positioning around multi-host readiness + proven repair.
-32. Customer/developer discovery.
-33. Free-to-paid validation before billing implementation.
+- Update README/launch positioning around multi-host readiness + proven repair once the first matrix is demonstrable.
+- Customer/developer discovery.
+- Free-to-paid validation before billing implementation.
 
 ## Deferred until evidence exists
 
@@ -79,4 +80,4 @@ The product is no longer scoped as a generic MCP inspector/connection doctor. Of
 
 Do not pull P2 work forward merely because UI is easier to demo. The critical path is:
 
-`verified observations -> versioned host rules -> reproducible failures -> repair proof -> hosted product`
+`deterministic fixtures -> normalized observations/evidence -> versioned host rules -> machine-readable host matrix -> repair proof -> security-gated hosted product`
