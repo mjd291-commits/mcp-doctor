@@ -10,7 +10,7 @@ The long-term product expands from a scanner into a compatibility proxy that can
 
 ## Status
 
-**Phase 0 — Project foundation / Alpha scanner**
+**Alpha integration candidate — controlled-server CLI and local host-rule evaluation**
 
 This repository starts with a CLI scanner. It does **not** execute discovered tools by default.
 
@@ -63,7 +63,7 @@ Requirements:
 Install:
 
 ```bash
-npm install
+npm ci
 ```
 
 Run a scan:
@@ -91,6 +91,37 @@ The scanner currently performs read-only discovery where the server permits it:
 - Report scoring
 
 It deliberately does **not** call arbitrary tools during the first phase.
+
+The integration candidate includes evidence-linked ChatGPT, Claude and Gemini CLI
+findings under `compatibility` in JSON output. Each finding retains its host surface,
+versioned rule pack, official-source claim, observation IDs and evidence IDs. These
+are local metadata evaluations; no real-host execution or official protocol
+conformance is claimed. Counts span the named surfaces and are not an overall host
+certification. Missing auth, tunnel, network or deployment evidence stays unknown;
+unperformed live/manual/host checks stay not-tested.
+
+Run the controlled fixtures and generate the example matrix:
+
+```bash
+npm run check
+npm run matrix:example
+```
+
+The latter starts a local fixture, scans it without calling tools, writes
+`examples/controlled-fixture-report.json` and `examples/compatibility-matrix.json`,
+then closes the fixture. The sample intentionally produces different findings:
+ChatGPT Streamable HTTP passes, Claude Messages API HTTPS fails on the local HTTP
+endpoint, and Gemini CLI warns about schema/name transformations.
+
+Use only controlled/authorized endpoints for this Alpha. Modern MCP 2026-07-28 is
+the verified path. Legacy negotiation/SSE remains experimental and SSE fallback is
+opt-in with `--legacy-sse-fallback`. Hosted arbitrary-URL scanning remains blocked
+by Issue #6. See `docs/command-center/ALPHA_INTEGRATION.md` for validation and gaps.
+
+External Inspector/Conformance results can be normalized and attached with
+`--upstream-results <file.json>`. This comparison hook neither runs upstream tools
+nor verifies the caller's evidence. Its envelope is documented in the integration
+notes; imported results do not change the report's conformance claim.
 
 ## Product principles
 

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1",
+  "protocolVersion": "2026-07-28",
+  "fixtures": [
+    {
+      "id": "healthy",
+      "category": "healthy",
+      "triggerMethod": null,
+      "expectedOutcome": "pass",
+      "recoveryExpected": false,
+      "notes": "Valid modern discover and list responses."
+    },
+    {
+      "id": "weak-schema",
+      "category": "schema-quality",
+      "triggerMethod": "tools/list",
+      "expectedOutcome": "warn",
+      "recoveryExpected": false,
+      "notes": "Transport and protocol remain healthy; tool metadata is intentionally weak."
+    },
+    {
+      "id": "hang",
+      "category": "timeout",
+      "triggerMethod": "tools/list",
+      "expectedOutcome": "fail",
+      "recoveryExpected": false,
+      "notes": "Request never completes until caller cancellation or fixture teardown."
+    },
+    {
+      "id": "disconnect-recovery",
+      "category": "transport-loss",
+      "triggerMethod": "tools/list",
+      "expectedOutcome": "recovery",
+      "recoveryExpected": true,
+      "notes": "First tools/list connection is dropped; the next tools/list succeeds."
+    },
+    {
+      "id": "malformed-json",
+      "category": "malformed-response",
+      "triggerMethod": "tools/list",
+      "expectedOutcome": "fail",
+      "recoveryExpected": false,
+      "notes": "HTTP succeeds but the response body is invalid JSON."
+    },
+    {
+      "id": "duplicate-response",
+      "category": "protocol-response",
+      "triggerMethod": "tools/list",
+      "expectedOutcome": "fail",
+      "recoveryExpected": false,
+      "notes": "Returns two JSON-RPC responses with the same request id."
+    },
+    {
+      "id": "fake-auth",
+      "category": "authentication",
+      "triggerMethod": "server/discover",
+      "expectedOutcome": "fail",
+      "recoveryExpected": false,
+      "notes": "Always returns 401 with a Bearer challenge; only fake/disposable credentials may be used."
+    }
+  ]
+}

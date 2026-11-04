@@ -54,3 +54,45 @@ Build the smallest reliable engine that can collect facts from an MCP server acr
 - 03 supplies faults/fixtures.
 - 04 reviews network/credential safety.
 - 07 defines persisted evidence identifiers later.
+
+## Issue #1 implementation audit — 2026-10-31
+
+Status: **in progress in draft PR #11** on branch `issue-1-modernize-scanner-core`.
+
+### Upstream lifecycle findings
+- `@modelcontextprotocol/client` 2.4.0 is the current stable client line used for this work.
+- The SDK defaults to legacy behavior unless version negotiation is enabled. MCP Doctor intentionally uses `versionNegotiation: { mode: "auto" }` so the SDK performs `server/discover` probing for the 2026-07-28 modern era and falls back to the legacy initialize flow only when appropriate.
+- A negotiated modern 2026-07-28 connection is stateless at the MCP core layer. Scanner architecture must not invent or depend on `initialize` / `initialized` or `Mcp-Session-Id` state for that era.
+- `Client.connect()` accepts request options including `signal` and `timeout`; discovery calls such as `listTools`, `listResources`, and `listPrompts` accept the same bounded request controls.
+- On modern Streamable HTTP, request cancellation is represented by aborting the in-flight request stream. The scanner therefore propagates `AbortSignal` rather than implementing a legacy cancellation message itself.
+
+### Implemented in PR #11
+- bounded connect, discovery, and cleanup operations;
+- external cancellation propagation and typed scanner error categories;
+- no SSE fallback after an HTTP timeout/cancellation, because silence on modern HTTP is not evidence of a legacy server;
+- intentionally supported legacy SSE fallback for definitive Streamable HTTP connection failure;
+- raw `Evidence` and `Observation` layers separated from `CheckResult` compatibility judgments;
+- checks reference their source observations;
+- optional, unadvertised tools/resources/prompts are informational rather than unhealthy;
+- scanner, SDK, protocol-era, and negotiated-version context in JSON/terminal reports;
+- bounded evidence serialization and basic credential/target redaction;
+- a scanner session seam so Reliability fixtures can inject deterministic faults without pretending mocks are protocol conformance;
+- automated coverage for healthy modern behavior, malformed schemas, timeout, cancellation, disconnect/recovery, and redaction;
+- healthy fixture verifies that default discovery never executes a discovered tool.
+
+### Still required before closing Issue #1
+- official Inspector strict-lint ingestion/comparison hook;
+- official MCP Conformance ingestion/comparison hook;
+- explicit legacy-era fixture if legacy support remains in the Alpha support matrix;
+- merge only after CI/typecheck/test verification and review.
+
+## Alpha integration decision — 2026-11-03
+
+Modern 2026-07-28 / SDK 2.4.0 is the tested path. Legacy SDK negotiation is
+experimental; legacy SSE fallback now requires an explicit option. A dedicated
+legacy fixture remains open. Normalized Observation/Evidence keys feed host rules
+without changing scanner diagnostics into protocol conformance findings.
+
+The caller-normalized upstream comparison hook is implemented; native Inspector /
+Conformance adapters and actual upstream execution remain open. SDK acceptance of
+duplicate response IDs is a recorded limitation. See command-center/ALPHA_INTEGRATION.md.
