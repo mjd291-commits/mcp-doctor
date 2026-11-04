@@ -2,6 +2,8 @@
 
 Last updated: 2026-11-03
 
+Draft integration PR: [#13](https://github.com/mjd291-commits/mcp-doctor/pull/13).
+
 ## Phase
 
 **Alpha integration candidate implemented on a separate draft-review branch; not released**

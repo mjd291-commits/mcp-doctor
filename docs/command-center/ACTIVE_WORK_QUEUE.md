@@ -2,6 +2,8 @@
 
 Last updated: 2026-11-03
 
+Draft integration PR: [#13](https://github.com/mjd291-commits/mcp-doctor/pull/13).
+
 ## Current milestone
 
 **Alpha 1 integration gate: verified scanner core + first multi-host compatibility matrix**
