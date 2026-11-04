@@ -8,15 +8,23 @@
     "node": ">=20"
   },
   "scripts": {
-    "scan": "tsx src/cli.ts",
-    "typecheck": "tsc --noEmit"
+    "scan": "node --import tsx src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts",
+    "test:fixtures": "node --import tsx --test test/fixtureSuite.test.ts",
+    "test:scanner": "node --import tsx --test test/scanner.test.ts",
+    "validate:host-rules": "node --import tsx src/hostCompatibility/validateRulePacks.ts",
+    "check": "npm run typecheck && npm run validate:host-rules && npm test",
+    "matrix:example": "node --import tsx test/generateMatrix.ts"
   },
   "dependencies": {
-    "@modelcontextprotocol/client": "^2.0.0"
+    "@modelcontextprotocol/client": "2.4.0"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
     "tsx": "^4.20.0",
-    "typescript": "^6.0.0"
+    "typescript": "^6.0.0",
+    "@modelcontextprotocol/server": "2.4.0",
+    "zod": "^4.0.0"
   }
 }

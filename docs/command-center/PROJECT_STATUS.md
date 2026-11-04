@@ -1,10 +1,10 @@
 # MCP Doctor — Project Status
 
-Last updated: 2026-11-02
+Last updated: 2026-11-03
 
 ## Phase
 
-**Alpha 1 core work implemented on review branches / integration gate**
+**Alpha integration candidate implemented on a separate draft-review branch; not released**
 
 ## Strategic position
 
@@ -16,13 +16,17 @@ The core question is:
 
 ## Current material milestone
 
-The first three P0 engineering streams have produced reviewable isolated PRs:
+`integration/alpha-host-matrix` reconciles the engineering snapshots from PRs #9,
+#11 and #10 and adds a source/evidence-linked evaluator and machine-readable
+ChatGPT, Claude and Gemini CLI matrix. The same controlled fixture yields different
+host-specific outcomes. The original PRs remain open and unchanged; main remains
+pre-integration and no Alpha release or merge is claimed.
 
-- PR #9 / Issue #5 — deterministic Reliability & Failure Lab fixture suite; non-draft and reported CI + CodeQL green.
-- PR #11 / Issue #1 — scanner modernization for MCP 2026-07-28 and TypeScript SDK 2.4.0; draft while Inspector/Conformance comparison hooks and legacy-era support decision remain.
-- PR #10 / Issue #4 — versioned HostRule framework plus source-backed ChatGPT/OpenAI, Claude and Gemini CLI packs; draft pending alignment with the scanner Observation/Evidence model and first machine-readable readiness matrix.
-
-These branches are intentionally isolated. Main remains the pre-integration baseline, so Alpha must not yet be represented as merged or released.
+See [ALPHA_INTEGRATION.md](ALPHA_INTEGRATION.md) for source commit SHAs,
+reproduction, Observation/Evidence keys, support decisions and remaining gates.
+The matrix is local metadata evaluation. No real-host or official conformance
+execution occurred. Missing deployment/auth evidence remains unknown and unrun
+manual/live/host paths remain not-tested.
 
 ## Upstream watch
 
@@ -34,27 +38,36 @@ These branches are intentionally isolated. Main remains the pre-integration base
 
 ## Current code / CI state
 
-- `main` clean install and typecheck baseline is green.
-- CodeQL baseline on `main` is green.
-- PR #9 reports dependency install, typecheck, tests and CodeQL passing.
-- PRs #10 and #11 are mergeable drafts; they remain integration work, not completed Alpha release state.
-- No material CI/security regression was found in this review.
+- Reproducible package-lock added; SDK client/server pinned to 2.4.0.
+- Dependency install and clean lockfile install completed locally.
+- TypeScript checks, all 3 packs / 16 rule validations, and all 27 automated tests
+  passed locally on the integration candidate; results are recorded in its draft PR.
+- Local npm audit reported zero known vulnerabilities.
+- CI now runs npm ci, typecheck, pack validation and all test suites.
+- Remote CI and CodeQL must be assessed on the integration PR; historical green
+  results on main/#9 do not establish this candidate's security status.
 
 ## Current critical path
 
-1. Review/integrate PR #9 reliability fixtures.
-2. Complete PR #11 Inspector/Conformance comparison hooks and make an explicit legacy-era support decision.
-3. Align PR #10 HostRule observation keys with PR #11's Observation/Evidence contract.
-4. Produce the first machine-readable host compatibility/readiness matrix from actual scanner observations.
-5. Prove repair suggestions by re-testing against deterministic fixtures.
-6. Complete hosted-scanner security gate (Issue #6) before arbitrary public URL scanning.
-7. Add official Skills-extension awareness (Issue #12) after the Alpha critical path, without expanding base-protocol conformance claims.
+1. Review the combined integration candidate and current CI/CodeQL evidence.
+2. Run official Inspector strict-lint / MCP Conformance and add native adapters;
+   the caller-normalized ingestion/comparison hook is implemented but no official
+   upstream run was performed.
+3. Address SDK acceptance of duplicate-response IDs or explicitly delegate its
+   conformance detection to the official tooling with evidence.
+4. Keep legacy negotiation/SSE experimental and opt-in until a dedicated fixture
+   verifies it; modern MCP 2026-07-28 is the tested Alpha path.
+5. Collect explicit auth/deployment/workflow context for remaining unknown checks;
+   add source staleness monitoring and actual-host evidence separately.
+6. Prove repairs by deterministic re-test after matrix review.
+7. Complete Issue #6 before hosted arbitrary-URL scanning.
+8. Keep Skills/SEP-2640 (#12) P1 and separate from base-protocol conformance.
 
 ## Dependency notes
 
 - Workstream 03 fixtures are an input to Workstream 01 scanner regression behavior.
-- Workstream 01's normalized Observation/Evidence contract is the blocking interface for Workstream 02 evaluation.
-- Workstream 02's first real matrix is the gate before repair-rule proof work becomes meaningful.
+- Workstream 01's Observation/Evidence keys now feed Workstream 02 evaluation on the integration candidate; additional auth/deployment keys remain uncollected.
+- Workstream 02's first controlled-fixture matrix exists on the integration candidate; review and additional evidence precede repair proof.
 - Workstream 04 security architecture gates hosted arbitrary-URL scanning; Web Product must not bypass it.
 - Workstream 07 should later own source fingerprints/staleness and extension-version evidence for host rule packs.
 
