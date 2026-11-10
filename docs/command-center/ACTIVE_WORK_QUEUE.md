@@ -1,6 +1,6 @@
 # MCP Doctor — Active Work Queue
 
-Last updated: 2026-11-03
+Last updated: 2026-11-10
 
 Draft integration PR: [#13](https://github.com/mjd291-commits/mcp-doctor/pull/13).
 
@@ -9,6 +9,12 @@ Draft integration PR: [#13](https://github.com/mjd291-commits/mcp-doctor/pull/13
 **Alpha 1 integration gate: verified scanner core + first multi-host compatibility matrix**
 
 MCP Doctor remains a versioned multi-host readiness and repair layer built on reliable protocol observations. Official Inspector and Conformance remain upstream authorities/tools to ingest or compare against, not functionality to duplicate.
+
+## Verification checkpoint — 2026-11-10
+
+- Stacked draft PR [#18](https://github.com/mjd291-commits/mcp-doctor/pull/18) fixes a scanner false negative for missing, whitespace-only and non-string tool names; includes regression coverage. Its [CI](https://github.com/mjd291-commits/mcp-doctor/actions/runs/42744551384) and [CodeQL](https://github.com/mjd291-commits/mcp-doctor/actions/runs/42744551743) both passed on head `e10096da`. This is a verified **PR checkpoint, not a merge or release**.
+- Next: review #18, integrate it into this branch, verify the resulting #13 CI and CodeQL on the updated head, then obtain approval for merging #13 to main. Keep original workstream PRs and Worker 3 onboarding separate.
+- Official protocol/Inspector/Registry upstream releases have no newly confirmed untracked blocker; continue Issues #12, #14 and #15. Official conformance, real-host testing and hosted-scan security remain uncompleted.
 
 ## P0 — Now
 
