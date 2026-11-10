@@ -17,6 +17,19 @@ export function inspectTools(
   const checks: CheckResult[] = [];
   const observationIds = [observationId];
 
+  const invalidNameCount = tools.filter(
+    tool => typeof tool.name !== "string" || !tool.name.trim(),
+  ).length;
+  checks.push({
+    id: "tools.required-names",
+    title: "Tool names are present",
+    status: invalidNameCount ? "fail" : "pass",
+    message: invalidNameCount
+      ? `${invalidNameCount} tool(s) have missing, blank, or non-string names.`
+      : "All discovered tools have non-empty string names.",
+    observationIds,
+  });
+
   const names = tools
     .map((tool) => (typeof tool.name === "string" ? tool.name : ""))
     .filter(Boolean);
