@@ -87,6 +87,28 @@ test("weak or malformed tool schemas remain raw evidence and produce separate ju
   assert.equal(report.checks.find((check) => check.id === "tools.name-hygiene")?.status, "warn");
 });
 
+test("missing, blank, or non-string tool names fail scanner diagnostics", async () => {
+  const session = makeSession({
+    listTools: async () => [
+      { description: "No name is provided here.", inputSchema: { type: "object" } },
+      { name: "   ", description: "Whitespace is not a valid name.", inputSchema: { type: "object" } },
+      { name: 123, description: "A numeric name is not valid.", inputSchema: { type: "object" } },
+      { name: "valid_tool", description: "A correctly named tool.", inputSchema: { type: "object" } },
+    ],
+  });
+
+  const report = await scanRemote("https://fixture.invalid/mcp", {
+    sessionFactory: () => session,
+  });
+
+  const requiredNames = report.checks.find(check => check.id === "tools.required-names");
+  assert.equal(requiredNames?.status, "fail");
+  assert.match(requiredNames?.message ?? "", /3 tool\(s\)/);
+  assert.equal(report.checks.find(check => check.id === "tools.duplicate-names")?.status, "pass");
+  assert.equal(report.checks.find(check => check.id === "tools.input-schema")?.status, "pass");
+  assert.equal(report.compatibility?.realHostTested, false);
+});
+
 test("hung connection is bounded and does not trigger legacy fallback after timeout", async () => {
   const modes: string[] = [];
   const sessionFactory: ScannerSessionFactory = (_url, mode) => {
