@@ -10,8 +10,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-export function inspectTools(tools: ToolLike[]): CheckResult[] {
+export function inspectTools(
+  tools: ToolLike[],
+  observationId = "discovery.tools",
+): CheckResult[] {
   const checks: CheckResult[] = [];
+  const observationIds = [observationId];
 
   const names = tools
     .map((tool) => (typeof tool.name === "string" ? tool.name : ""))
@@ -26,6 +30,7 @@ export function inspectTools(tools: ToolLike[]): CheckResult[] {
     message: duplicateNames.length
       ? `Duplicate tool names detected: ${[...new Set(duplicateNames)].join(", ")}`
       : "No duplicate tool names detected.",
+    observationIds,
   });
 
   const missingDescriptions = tools.filter(
@@ -39,6 +44,7 @@ export function inspectTools(tools: ToolLike[]): CheckResult[] {
     message: missingDescriptions.length
       ? `${missingDescriptions.length} tool(s) have missing or very short descriptions.`
       : "All discovered tools have non-trivial descriptions.",
+    observationIds,
   });
 
   const invalidSchemas = tools.filter((tool) => {
@@ -54,6 +60,7 @@ export function inspectTools(tools: ToolLike[]): CheckResult[] {
     message: invalidSchemas.length
       ? `${invalidSchemas.length} tool(s) have an absent/non-object input schema or a non-object root type.`
       : "All discovered tool input schemas have an object-compatible root.",
+    observationIds,
   });
 
   const suspiciousNames = names.filter(
@@ -67,6 +74,7 @@ export function inspectTools(tools: ToolLike[]): CheckResult[] {
     message: suspiciousNames.length
       ? `Potentially awkward tool names: ${suspiciousNames.join(", ")}`
       : "Tool names use conservative characters and lengths.",
+    observationIds,
   });
 
   return checks;
