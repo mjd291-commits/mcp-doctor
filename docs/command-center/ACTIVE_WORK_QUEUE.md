@@ -1,6 +1,6 @@
 # MCP Doctor — Active Work Queue
 
-Last updated: 2026-11-10
+Last updated: 2026-11-12
 
 Draft integration PR: [#13](https://github.com/mjd291-commits/mcp-doctor/pull/13).
 
@@ -10,11 +10,18 @@ Draft integration PR: [#13](https://github.com/mjd291-commits/mcp-doctor/pull/13
 
 MCP Doctor remains a versioned multi-host readiness and repair layer built on reliable protocol observations. Official Inspector and Conformance remain upstream authorities/tools to ingest or compare against, not functionality to duplicate.
 
+## Security release checkpoint — 2026-11-12
+
+- **Material upstream security update:** Official [Inspector 2.15.0](https://github.com/modelcontextprotocol/inspector/releases/tag/2.15.0), released 2026-11-12 00:46 UTC, fixes four vulnerabilities (fetch/OAuth cloud-metadata destination guard, unbounded event-stream recording, `mcpdo` daemon authentication, and unsafe `server.json` environment preview). **2.14.0 is superseded; do not introduce or execute it.** Detailed exposure review and acceptance criteria recorded in [Issue #14](https://github.com/mjd291-commits/mcp-doctor/issues/14).
+- **Security dependency:** Workstream 04 / Issue #6 must add cloud-metadata alternate-address and stream memory-exhaustion cases to the hosted-scanner threat model. This is a **pre-hosted-scan** gate, not evidence of a current MCP Doctor vulnerability. The Alpha upstream comparison hook only accepts caller-normalized JSON; no Inspector execution has been demonstrated.
+- **Release order unchanged:** Review/land stacked #18 into #13, rerun CI/CodeQL on the combined head, inspect final diff and obtain approval before merging to main. Any later native Inspector execution/adapter must target patched 2.15.0 or later and patched Node.
+- Upstream watch: official TypeScript SDK v2.4.0 and Registry v1.8.9 remain latest observed releases; MCPJam v3.20.0 positioning is tracked in #19. No new host-specific change was independently established in this checkpoint.
+
 ## Verification checkpoint — 2026-11-10
 
 - Stacked draft PR [#18](https://github.com/mjd291-commits/mcp-doctor/pull/18) fixes a scanner false negative for missing, whitespace-only and non-string tool names; includes regression coverage. Its [CI](https://github.com/mjd291-commits/mcp-doctor/actions/runs/42744551384) and [CodeQL](https://github.com/mjd291-commits/mcp-doctor/actions/runs/42744551743) both passed on head `e10096da`. This is a verified **PR checkpoint, not a merge or release**.
 - Next: review #18, integrate it into this branch, verify the resulting #13 CI and CodeQL on the updated head, then obtain approval for merging #13 to main. Keep original workstream PRs and Worker 3 onboarding separate.
-- Official protocol/Inspector/Registry upstream releases have no newly confirmed untracked blocker; continue Issues #12, #14 and #15. Official conformance, real-host testing and hosted-scan security remain uncompleted.
+- As of the November 10 checkpoint, no additional release blocker was confirmed; the November 12 Inspector security update above supersedes that statement. Continue Issues #12, #14 and #15. Official conformance, real-host testing and hosted-scan security remain uncompleted.
 
 ## P0 — Now
 
